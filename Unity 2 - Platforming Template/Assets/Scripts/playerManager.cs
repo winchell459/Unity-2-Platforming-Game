@@ -5,6 +5,12 @@ using UnityEngine.UI;
 
 public class playerManager : MonoBehaviour
 {
+    //day-2 added
+    private List<Collectable> inventory = new List<Collectable>();
+    public Text inventoryText;
+    public Text descriptionText;
+    private int currentIndex;
+
     // Player specific variables
     private int health;
     private int score;
@@ -37,6 +43,41 @@ public class playerManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        //Day-2 added----------------------------------------------
+        if (inventory.Count == 0)
+        {
+            // If the inventory is empty
+            inventoryText.text = "Current Selection: None";
+            descriptionText.text = "";
+        }
+        else
+        {
+            inventoryText.text = "Current Selection: " + inventory[currentIndex].collectableName + " " + currentIndex.ToString();
+            descriptionText.text = "Press [E] to " + inventory[currentIndex].description;
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            // Using
+            if (inventory.Count > 0)
+            {
+                inventory[currentIndex].Use();
+                inventory.RemoveAt(currentIndex);
+                if (inventory.Count > 0) currentIndex = (currentIndex - 1) % inventory.Count;
+                else currentIndex = 0;
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (inventory.Count > 0)
+            {
+                // Move to next in inventory
+                currentIndex = (currentIndex + 1) % inventory.Count;
+            }
+        }
+
+
+        //Day-1 ----------------------------------------------------
         healthText.text = "Health: " + health.ToString();
         scoreText.text  = "Score:  " + score.ToString();
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -116,5 +157,16 @@ public class playerManager : MonoBehaviour
     {
         score += value;
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.GetComponent<Collectable>() != null)
+        {
+            collision.GetComponent<Collectable>().player = this.gameObject;
+            inventory.Add(collision.GetComponent<Collectable>());
+            Destroy(collision.gameObject);
+        }
+    }
+
 
 }
