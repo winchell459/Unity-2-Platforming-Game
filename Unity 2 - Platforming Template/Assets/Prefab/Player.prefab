@@ -166,6 +166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fd5a719678c04218977bf7f72898ee7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inventoryText: {fileID: 0}
+  descriptionText: {fileID: 0}
   healthText: {fileID: 0}
   scoreText: {fileID: 0}
   pauseMenu: {fileID: 0}

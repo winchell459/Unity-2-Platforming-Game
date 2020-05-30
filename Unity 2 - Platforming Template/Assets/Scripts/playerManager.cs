@@ -5,15 +5,21 @@ using UnityEngine.UI;
 
 public class playerManager : MonoBehaviour
 {
-    //day-2 added --------------------------------------------------
-    private List<Collectable> inventory = new List<Collectable>();
+    //day-3 remove --------------------------------------------------
+    //private List<Collectable> inventory = new List<Collectable>();
+
     public Text inventoryText;
     public Text descriptionText;
     private int currentIndex;
 
+    //day 3 remove -----------------------------------------------------
     // Player specific variables
-    private int health;
-    private int score;
+    //private int health;
+    //private int score;
+
+    //day 3 add ------------------------------------------------------
+    public PlayerInfo info;
+    //must now add info. in front of every reference to inventory, health an score to remove errors
 
     // Boolean values
     private bool isGamePaused = false;
@@ -35,9 +41,15 @@ public class playerManager : MonoBehaviour
         // Make sure all menus are filled in
         FindAllMenus();
 
+        //day 3 added ----------------------------------------------
+        info = FindObjectOfType<PlayerInfo>();
+
+
         //Start player with initial health and score
-        health = 100;
-        score = 0;
+        info.health = 100;
+        info.score = 0;
+
+        
     }
 
     // Update is called once per frame
@@ -45,43 +57,43 @@ public class playerManager : MonoBehaviour
     {
 
         //Day-2 Added --------------------------------------------------
-        if(inventory.Count == 0) //if inventory is empty
+        if(info.inventory.Count == 0) //if inventory is empty
         {
             inventoryText.text = "Current Selection: None";
             descriptionText.text = "";
         }
         else
         {
-            inventoryText.text = "Current Selection: " + inventory[currentIndex].collectableName + " " + currentIndex.ToString();
-            descriptionText.text = "Press [E] to " + inventory[currentIndex].description;
+            inventoryText.text = "Current Selection: " + info.inventory[currentIndex].collectableName + " " + currentIndex.ToString();
+            descriptionText.text = "Press [E] to " + info.inventory[currentIndex].description;
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
             //Using
-            if(inventory.Count > 0)
+            if(info.inventory.Count > 0)
             {
-                inventory[currentIndex].Use();
-                inventory.RemoveAt(currentIndex); // A, B, C  
-                if (inventory.Count > 0) currentIndex = currentIndex % inventory.Count; //A, B currentIndex = 1
+                info.inventory[currentIndex].Use();
+                info.inventory.RemoveAt(currentIndex); // A, B, C  
+                if (info.inventory.Count > 0) currentIndex = currentIndex % info.inventory.Count; //A, B currentIndex = 1
                 else currentIndex = 0;
             }
         }
 
         if (Input.GetKeyDown(KeyCode.I))
         {
-            if (inventory.Count > 0) currentIndex = (currentIndex + 1) % inventory.Count;
+            if (info.inventory.Count > 0) currentIndex = (currentIndex + 1) % info.inventory.Count;
         }
 
 
 
-        healthText.text = "Health: " + health.ToString();
-        scoreText.text  = "Score:  " + score.ToString();
+        healthText.text = "Health: " + info.health.ToString();
+        scoreText.text  = "Score:  " + info.score.ToString();
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             PauseGame();
         }
-        if (health <= 0)
+        if (info.health <= 0)
         {
             LoseGame();
         }
@@ -112,6 +124,17 @@ public class playerManager : MonoBehaviour
         {
             pauseMenu = GameObject.Find("PauseGameMenu");
             pauseMenu.SetActive(false);
+        }
+
+        //Day 3 ------------------------------------------------------------
+        if (!inventoryText)
+        {
+            inventoryText = GameObject.Find("InventoryText").GetComponent<Text>();
+        }
+
+        if (!descriptionText)
+        {
+            descriptionText = GameObject.Find("DescriptionText").GetComponent<Text>();
         }
     }
 
@@ -147,12 +170,12 @@ public class playerManager : MonoBehaviour
 
     public void ChangeHealth(int value)
     {
-        health += value;
+        info.health += value;
     }
 
     public void ChangeScore(int value)
     {
-        score += value;
+        info.score += value;
     }
 
 
@@ -161,8 +184,9 @@ public class playerManager : MonoBehaviour
         if(collision.GetComponent<Collectable>() != null)
         {
             collision.GetComponent<Collectable>().player = this.gameObject;
-            inventory.Add(collision.GetComponent<Collectable>());
-            Destroy(collision.gameObject);
+            info.inventory.Add(collision.GetComponent<Collectable>());
+            //Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
         }
 
     }

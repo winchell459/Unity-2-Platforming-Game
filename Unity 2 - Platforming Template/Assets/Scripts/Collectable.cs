@@ -9,4 +9,10 @@ public abstract class Collectable : MonoBehaviour
     public GameObject player;
 
     public abstract void Use();
+
+    //day 3 -------------------------------------------------------
+    public void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
 }

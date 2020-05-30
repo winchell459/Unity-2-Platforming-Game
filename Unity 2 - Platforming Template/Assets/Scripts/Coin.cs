@@ -10,6 +10,7 @@ public class Coin : Collectable
     {
         collectableName = "Coin";
         description = "increase score by " + value.ToString();
+        
     }
 
     public override void Use()
